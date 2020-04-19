@@ -46,12 +46,8 @@ public class Lesson1 {
                 "alpha", "bravo", "charlie", "delta", "echo", "foxtrot");
 
         System.out.println(list.stream()
-                .map(string -> string.charAt(0))
-                //Argument 1: Creates starting result (new StringBuilder)
-                //Argument 2: Adds an element (String) to result (StringBuilder).
-                //Argument 3: If run the stream in parallel, multiple StringBuilders will be created. This is for combining these together.
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString());
+                .map(string -> Character.toString(string.charAt(0)))
+                .collect(Collectors.joining()));
     }
 
     /**
@@ -97,9 +93,8 @@ public class Lesson1 {
         map.put("a", 1);
 
         System.out.println(map.entrySet().stream()
-                .map(set -> set.getKey().toString() + ": " + set.getValue().toString() + "; ")
-                .collect(StringBuilder::new, StringBuilder::append, StringBuilder::append)
-                .toString());
+                .map(set -> set.getKey() + ": " + set.getValue().toString() + "; ")
+                .collect(Collectors.joining()));
     }
 
     /**
