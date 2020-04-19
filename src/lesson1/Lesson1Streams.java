@@ -6,11 +6,12 @@
 package lesson1;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author Speakjava (Simon Ritter)
  */
-public class Lesson1 {
+public class Lesson1Streams {
     /**
      * Run the exercises to ensure we got the right answers
      */
@@ -44,9 +45,9 @@ public class Lesson1 {
         List<String> list = Arrays.asList(
                 "alpha", "bravo", "charlie", "delta", "echo", "foxtrot");
 
-        StringBuilder sb = new StringBuilder();
-        list.forEach(string -> sb.append(string.charAt(0)));
-        System.out.println(sb);
+        System.out.println(list.stream()
+                .map(string -> Character.toString(string.charAt(0)))
+                .collect(Collectors.joining()));
     }
 
     /**
@@ -57,8 +58,11 @@ public class Lesson1 {
     private void exercise2() {
         List<String> list = new ArrayList<>(Arrays.asList(
                 "alpha", "bravo", "charlie", "delta", "echo", "foxtrot"));
-        list.removeIf(string -> string.length() % 2 == 0);
-        System.out.println(list);
+
+        list.stream()
+                .filter(string -> string.length() % 2 == 1)
+                .collect(Collectors.toList())
+                .forEach(System.out::println);
     }
 
     /**
@@ -70,8 +74,10 @@ public class Lesson1 {
         List<String> list = new ArrayList<>(Arrays.asList(
                 "alpha", "bravo", "charlie", "delta", "echo", "foxtrot"));
 
-        list.replaceAll(String::toUpperCase);
-        System.out.println(list);
+        list.stream()
+                .map(String::toUpperCase)
+                .collect(Collectors.toList())
+                .forEach(System.out::println);
     }
 
     /**
@@ -86,9 +92,9 @@ public class Lesson1 {
         map.put("b", 2);
         map.put("a", 1);
 
-        StringBuilder sb = new StringBuilder();
-        map.forEach((key, value) -> sb.append(key).append(": ").append(value.toString()).append("; "));
-        System.out.println(sb);
+        System.out.println(map.entrySet().stream()
+                .map(set -> set.getKey() + ": " + set.getValue().toString() + "; ")
+                .collect(Collectors.joining()));
     }
 
     /**
@@ -108,7 +114,7 @@ public class Lesson1 {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        Lesson1 lesson = new Lesson1();
+        Lesson1Streams lesson = new Lesson1Streams();
         lesson.runExercises();
     }
 }
