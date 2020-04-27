@@ -13,7 +13,6 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -112,8 +111,8 @@ public class Lesson2 {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("src\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
-                    .flatMap(line -> Arrays.stream(line.split("\\W+")))
-                    .filter(word -> !Pattern.matches(WORD_REGEXP, word))
+                    .flatMap(line -> Arrays.stream(line.split(WORD_REGEXP)))
+                    .distinct()
                     .forEach(System.out::println);
         }
     }
@@ -127,10 +126,10 @@ public class Lesson2 {
         try (BufferedReader reader = Files.newBufferedReader(
                 Paths.get("src\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
-                    .flatMap(line -> Arrays.stream(line.split("\\W+")))
+                    .flatMap(line -> Arrays.stream(line.split(WORD_REGEXP)))
                     .map(String::toLowerCase)
                     .distinct()
-                    .sorted(Comparator.naturalOrder())
+                    .sorted()
                     .forEach(System.out::println);
         }
     }
