@@ -96,7 +96,7 @@ public class Lesson2 {
      */
     private void exercise4() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
-                Paths.get("src\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
+                Paths.get("src\\main\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
             System.out.println(reader.lines().count());
         }
     }
@@ -109,7 +109,7 @@ public class Lesson2 {
      */
     private void exercise5() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
-                Paths.get("src\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
+                Paths.get("src\\main\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
                     .flatMap(line -> Arrays.stream(line.split(WORD_REGEXP)))
                     .distinct()
@@ -124,7 +124,7 @@ public class Lesson2 {
      */
     private void exercise6() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
-                Paths.get("src\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
+                Paths.get("src\\main\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
                     .flatMap(line -> Arrays.stream(line.split(WORD_REGEXP)))
                     .map(String::toLowerCase)
@@ -139,7 +139,7 @@ public class Lesson2 {
      */
     private void exercise7() throws IOException {
         try (BufferedReader reader = Files.newBufferedReader(
-                Paths.get("src\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
+                Paths.get("src\\main\\lesson2\\SonnetI.txt"), StandardCharsets.UTF_8)) {
             reader.lines()
                     .flatMap(line -> Arrays.stream(line.split("\\W+")))
                     .map(String::toLowerCase)
