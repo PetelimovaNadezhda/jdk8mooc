@@ -81,7 +81,9 @@ public class Lesson3 {
                             }));
         } else {
             IntStream.range(0, LIST_SIZE)
+                    .sequential()
                     .forEach(i -> IntStream.range(i, LIST_SIZE)
+                            .sequential()
                             .forEach(j -> {
                                 distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
                                 distances[j][i] = distances[i][j];
@@ -129,7 +131,7 @@ public class Lesson3 {
         measure("Sequential", () -> computeLevenshtein(wordList, false));
         measure("Parallel", () -> computeLevenshtein(wordList, true));
 
-        measure("Sequential", () -> processWords(wordList, false));
-        measure("Parallel", () -> processWords(wordList, true));
+//        measure("Sequential", () -> processWords(wordList, false));
+//        measure("Parallel", () -> processWords(wordList, true));
     }
 }

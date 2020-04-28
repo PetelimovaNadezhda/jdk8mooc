@@ -12,6 +12,6 @@ public class RandomWordsTest {
     public void testCreateList() throws IOException {
         int listSize = 25;
         List<String> list = new RandomWords().createList(listSize);
-        Assert.assertEquals(list.size(), listSize);
+        Assert.assertEquals(list.size(), listSize, "Size for new list is equals to expected");
     }
 }
