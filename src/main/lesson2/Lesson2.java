@@ -54,9 +54,9 @@ public class Lesson2 {
         List<String> list = Arrays.asList(
                 "The", "Quick", "BROWN", "Fox", "Jumped", "Over", "The", "LAZY", "DOG");
 
-        list.stream()
+        System.out.println(list.stream()
                 .map(String::toLowerCase)
-                .forEach(System.out::println);
+                .collect(Collectors.toList()));
     }
 
     /**

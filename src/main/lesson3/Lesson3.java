@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * @author Simon Ritter (@speakjava)
@@ -69,27 +70,24 @@ public class Lesson3 {
     static int[][] computeLevenshtein(List<String> wordList, boolean parallel) {
         final int LIST_SIZE = wordList.size();
         int[][] distances = new int[LIST_SIZE][LIST_SIZE];
-
         if (parallel) {
             IntStream.range(0, LIST_SIZE)
                     .parallel()
-                    .forEach(i -> IntStream.range(i, LIST_SIZE)
-                            .parallel()
-                            .forEach(j -> {
-                                distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
-                                distances[j][i] = distances[i][j];
-                            }));
+                    .forEach(i -> distances[i] = computeDistancesForOneWord(i, wordList));
         } else {
             IntStream.range(0, LIST_SIZE)
                     .sequential()
-                    .forEach(i -> IntStream.range(i, LIST_SIZE)
-                            .sequential()
-                            .forEach(j -> {
-                                distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
-                                distances[j][i] = distances[i][j];
-                            }));
+                    .forEach(i -> distances[i] = computeDistancesForOneWord(i, wordList));
         }
+        return distances;
+    }
 
+    private static int[] computeDistancesForOneWord(int i, List<String> wordList) {
+        final int LIST_SIZE = wordList.size();
+        int[] distances = new int[LIST_SIZE];
+        for (int j = 0; j < LIST_SIZE; j++) {
+            distances[j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
+        }
         return distances;
     }
 
@@ -102,20 +100,19 @@ public class Lesson3 {
      */
     static List<String> processWords(List<String> wordList, boolean parallel) {
         if (parallel) {
-            return wordList.parallelStream()
-                    .sorted()
-                    .filter(word -> word.startsWith("a"))
-                    .map(String::toUpperCase)
-                    .distinct()
-                    .collect(Collectors.toList());
+            return processWordsForStream(wordList.parallelStream());
         } else {
-            return wordList.stream()
-                    .sorted()
-                    .filter(word -> word.startsWith("a"))
-                    .map(String::toUpperCase)
-                    .distinct()
-                    .collect(Collectors.toList());
+            return processWordsForStream(wordList.stream());
+
         }
+    }
+
+    private static List<String> processWordsForStream(Stream<String> stream) {
+        return stream.sorted()
+                .filter(word -> word.startsWith("a"))
+                .map(String::toUpperCase)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     /**
