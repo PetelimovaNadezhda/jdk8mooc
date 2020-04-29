@@ -109,7 +109,7 @@ public class Lesson3 {
 
     private static List<String> processWordsForStream(Stream<String> stream) {
         return stream.sorted()
-                .filter(word -> word.startsWith("a"))
+                .filter(word -> !word.startsWith("a"))
                 .map(String::toUpperCase)
                 .distinct()
                 .collect(Collectors.toList());
