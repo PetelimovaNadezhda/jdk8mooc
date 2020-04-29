@@ -6,11 +6,11 @@
 package lesson3;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * @author Simon Ritter (@speakjava)
@@ -63,52 +63,35 @@ public class Lesson3 {
      * much as it needs to, since for every word a, b it should be the case that
      * lev(a,b) == lev(b,a) i.e., Levenshtein distance is commutative.
      *
-     * @param wordList The subset of words whose distances to compute
-     * @param parallel Whether to run in parallel
+     * @param wordList   The subset of words whose distances to compute
+     * @param isParallel Whether to run in parallel
      * @return Matrix of Levenshtein distances
      */
-    static int[][] computeLevenshtein(List<String> wordList, boolean parallel) {
+    static int[][] computeLevenshtein(List<String> wordList, boolean isParallel) {
         final int LIST_SIZE = wordList.size();
         int[][] distances = new int[LIST_SIZE][LIST_SIZE];
-        if (parallel) {
-            IntStream.range(0, LIST_SIZE)
-                    .parallel()
-                    .forEach(i -> distances[i] = computeDistancesForOneWord(i, wordList));
-        } else {
-            IntStream.range(0, LIST_SIZE)
-                    .sequential()
-                    .forEach(i -> distances[i] = computeDistancesForOneWord(i, wordList));
-        }
-        return distances;
-    }
-
-    private static int[] computeDistancesForOneWord(int i, List<String> wordList) {
-        final int LIST_SIZE = wordList.size();
-        int[] distances = new int[LIST_SIZE];
-        for (int j = 0; j < LIST_SIZE; j++) {
-            distances[j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
-        }
+        (isParallel ? IntStream.range(0, LIST_SIZE).parallel() : IntStream.range(0, LIST_SIZE).sequential())
+                .mapToObj(int1 -> IntStream.range(int1, LIST_SIZE).mapToObj(int2 -> Arrays.asList(int1, int2)))
+                .flatMap(lists -> lists)
+                .forEach(lists -> {
+                    int i = lists.get(0);
+                    int j = lists.get(1);
+                    distances[i][j] = Levenshtein.lev(wordList.get(i), wordList.get(j));
+                    distances[j][i] = distances[i][j];
+                });
         return distances;
     }
 
     /**
      * Process a list of random strings and return a modified list
      *
-     * @param wordList The subset of words whose distances to compute
-     * @param parallel Whether to run in parallel
+     * @param wordList   The subset of words whose distances to compute
+     * @param isParallel Whether to run in parallel
      * @return The list processed in whatever way you want
      */
-    static List<String> processWords(List<String> wordList, boolean parallel) {
-        if (parallel) {
-            return processWordsForStream(wordList.parallelStream());
-        } else {
-            return processWordsForStream(wordList.stream());
-
-        }
-    }
-
-    private static List<String> processWordsForStream(Stream<String> stream) {
-        return stream.sorted()
+    static List<String> processWords(List<String> wordList, boolean isParallel) {
+        return (isParallel ? wordList.parallelStream() : wordList.stream())
+                .sorted()
                 .filter(word -> !word.startsWith("a"))
                 .map(String::toUpperCase)
                 .distinct()
