@@ -7,6 +7,7 @@ package lesson3;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -66,12 +67,21 @@ public class Lesson3 {
      * @param isParallel Whether to run in parallel
      * @return Matrix of Levenshtein distances
      */
-    static Integer[][] computeLevenshtein(List<String> wordList, boolean isParallel) {
+    static int[][] computeLevenshtein(List<String> wordList, boolean isParallel) {
         final int LIST_SIZE = wordList.size();
         return (isParallel ? IntStream.range(0, LIST_SIZE).parallel() : IntStream.range(0, LIST_SIZE).sequential())
-                .mapToObj(int1 -> IntStream.range(0, LIST_SIZE).mapToObj(int2 -> new Pair(int1, int2)).collect(Collectors.toList()))
-                .map(pairs -> pairs.stream().map(pair -> Levenshtein.lev(wordList.get(pair.firstIndex), wordList.get(pair.secondIndex))).toArray(Integer[]::new))
-                .toArray(Integer[][]::new);
+                .mapToObj(int1 -> IntStream.range(0, LIST_SIZE).mapToObj(int2 -> new Pair(int1, int2)))
+                .flatMap(Function.identity())
+                .collect(() -> new int[LIST_SIZE][LIST_SIZE],
+                        (intArray, pair) ->
+                                intArray[pair.getFirstIndex()][pair.getSecondIndex()] = Levenshtein.lev(wordList.get(pair.getFirstIndex()), wordList.get(pair.getSecondIndex())),
+                        (a, b) -> {
+                            for (int i = 0; i < a.length; i++) {
+                                for (int j = 0; j < b.length; j++) {
+                                    a[i][j] = a[i][j] + b[i][j];
+                                }
+                            }
+                        });
     }
 
     /**
